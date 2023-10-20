@@ -220,7 +220,11 @@ std::pair<bool, std::string> game_over_none() {
 
 
 void sending(int client_socket, const std::string& message) {
-	send(client_socket, message.c_str(), 200, 0);
+	//std::cout << std::endl;
+        //std::cout << "board " << message << "v";
+
+	//std::cout << "mess" << message;
+	send(client_socket, message.c_str(), 300, 0);
 }
 
 void send_result(int client_socket, char flag,  const std::string final) {
@@ -229,21 +233,28 @@ void send_result(int client_socket, char flag,  const std::string final) {
 		std::cout << "true";
   //              return true;
         }
-//	std::cout << "fal";
-//	return false;
 }
 
 bool fl = false;
 std::string final;
 
-void client_handler(int client_socket, char XO, const std::string& turn, char& flag) {
+void client_handler(int client_socket, char XO, std::string turn, char& flag) {
 	send_result(client_socket, flag,  final); // if someone win each thread will send the result to both clients
-
+   
 	int recav_call = 0; 
 	std::string board = get_board_as_string(); // getting board as string
+//	std::cout << "turn" << turn;
+//	std::string board = turn;	
+	
+//	std::unique_lock<std::mutex> lock1(myMutex); 
 	board += turn; // also adding to board message the message who's turn it is now
-
+//	std::cout << std::endl;
+//	std::cout <<  board << "v";
+//	lock1.unlock();
 	sending(client_socket, board); //each thread will send board to his client
+	//board = "";
+	//th.join();
+	//lock1.unlock();
 
 	int cell_num; // the cell num that client will enter in his turn
         char buffer[1]; // keeps the cell num that client enter
@@ -252,15 +263,15 @@ void client_handler(int client_socket, char XO, const std::string& turn, char& f
 	
 	if (recav_call == 0) {	
 		recav_call++; // incrementing variable recieve_call such that if one thread already enter this if condition, the other thread do not enter, beacause server must receve message only from player who's turn it is now
-		if (turn == "Your move cell num : " && XO == 'X') { // if it is X turn, recieve info from client X
+		if (turn == "Please enter your move: " && XO == 'X') { // if it is X turn, recieve info from client X
                 	recv(client_socket, buffer, 1, 0);
         	}
 
-		if (turn == "Your move cell num : " && XO == 'O') { // if it is O turn, recieve info from client O
+		if (turn == "Please enter your move: " && XO == 'O') { // if it is O turn, recieve info from client O
                         recv(client_socket, buffer, 1, 0);
                 }
 
-	
+			
 
 		cell_num = buffer[0] - '0'; // making cell_num string 
         	if (make_move(cell_num, XO)) { // making move => updating board, make_move function returns true if the move is accessable
@@ -279,9 +290,14 @@ void client_handler(int client_socket, char XO, const std::string& turn, char& f
             	         }
    		}
 
+	
+//		turn = "The opponents turn, please wait for your turn";
+//		empty = "Your turn: enter your move: ";
+
 	}
 	
 
+	//lock.unlock();
 	if (fl) {
 		std::cout << XO;
 		flag = 1;
@@ -301,7 +317,7 @@ int main() {
 
     sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(12364);
+    serverAddr.sin_port = htons(12362);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
 
     if (bind(server_socket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
@@ -315,16 +331,15 @@ int main() {
     int client_socketX = accept(server_socket, NULL, NULL);
     int client_socketO = accept(server_socket, NULL, NULL);
 
-    std::string turn = "Your move cell num : ";
+    std::string turn = "Please enter your move: ";
     std::string empty = "";
 
     char flag = 0;
     int i = 0;
     while (true) {
-
-    	std::cout << get_board_as_string();	
 	std::thread th1(client_handler, client_socketX, 'X', turn, std::ref(flag));
 	std::thread th2(client_handler, client_socketO, 'O', empty, std::ref(flag));
+
 
 	th1.join();
 	th2.join();
@@ -341,11 +356,12 @@ int main() {
         }
 
 
-	if (turn == "Your move cell num : ") {
-                turn = "";
-                empty = "Your move cell num : ";
+	if (turn == "Please enter your move: ") {
+               turn = "";
+                empty = "Please enter your move: ";
+
         } else {
-                turn = "Your move cell num : " ;
+                turn = "Please enter your move: ";
                 empty = "";
         }
 
