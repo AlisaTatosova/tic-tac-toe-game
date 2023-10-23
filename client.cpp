@@ -1,64 +1,59 @@
 #include <iostream>
+#include <cstdlib>
 #include <cstring>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <thread>
-#include <mutex>
-
-std::mutex m;
 
 void sending(int client_socket) {
-      int cell_num;
-      std::cin >> cell_num;
-
-      char move[1] = { static_cast<char>(cell_num + '0')};
-      send(client_socket, move, 1, 0);
+    int cell_num;
+    std::cin >> cell_num;
+    std::cout << std::endl;
+    char move[1] = { static_cast<char>(cell_num + '0')};
+    send(client_socket, move, 1, 0);
 }
 
 
 char rec(int client_socket) {
-	char buffer[1000];
-	recv(client_socket, buffer, sizeof(buffer), 0);	
-	bool flag = false;
-	if (buffer[153] != 'P' && buffer[153] != 'D' && buffer[153] != 'A' && buffer[153] != 'R' && buffer[153] != 'C') {
-		flag = true;
-	}
-	if (flag) {
-		flag = false;
-		std::cout << "The opponents turn, please wait for your turn\n";
-	} 
+    char buffer[1000];
+    recv(client_socket, buffer, sizeof(buffer), 0);  
+    system("clear");
+    bool flag = false;
+    std::cout << buffer;
+    if (buffer[197] == ':') {
+         sending(client_socket);
+         return ' ';
+    } else if (buffer[153] == 'I') {
+	 sending(client_socket);
+         return ' ';
+    } else {
+	std::cout << std::endl;
+    }
+    
+    if (strncmp(buffer + 153, "Diagonal win of X", 17) == 0) {
+  	return '*';
+    } else if (strncmp(buffer + 153, "Diagonal win of O", 17) == 0) {
+	return '*';
+    } else if (strncmp(buffer + 153, "Antidiagonal win of X", 21) == 0) {
+    	return '*';
+    } else if (strncmp(buffer + 153, "Antidiagonal win of O", 21) == 0) {
+        return '*';
+    } else if (strncmp(buffer + 153, "Row win of X", 12) == 0) {
+        return '*';
+    } else if (strncmp(buffer + 153, "Row win of O", 12) == 0) {
+        return '*';
+    } else if (strncmp(buffer + 153, "Column win of X", 15) == 0) {
+        return '*';
+    } else if (strncmp(buffer + 153, "Column win of O", 15) == 0) {
+        return '*';
+    } else if (strncmp(buffer + 153, "End: None has won!", 18) == 0) {
+        return '*';
+    }
 
-	std::cout << buffer;
 
-	if (strncmp(buffer + 153, "Diagonal win of X: Congrats!", 29) == 0) {
-                return '*';
-
-	} else if (strncmp(buffer + 153, "Diagonal win of O: Congrats!", 29) == 0) {
-
-                return '*';
-
-	} else if (strncmp(buffer + 153, "Antidiagonal win of X: Congrats!", 33) == 0) {
-		return '*';
-
-        } else if (strncmp(buffer + 153, "Antidiagonal win of O: Congrats!", 33) == 0) {
-                return '*';
-
-        } else if (strncmp(buffer + 153, "Row win of X: Congrats!", 23) == 0) {
-                return '*';
-
-        } else if (strncmp(buffer + 153, "Row win of O: Congrats!", 23) == 0) {
-                return '*';
-
-        } else if (strncmp(buffer + 153, "Column win of X: Congrats!", 26) == 0) {
-        	return '*';
-
-	} else if (strncmp(buffer + 153, "Column win of O: Congrats!", 26) == 0) {
-		return '*';
-        }
-
-	return buffer[175];
+  return buffer[175];
 }
 
 
@@ -71,7 +66,7 @@ int main() {
 
     sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(12362);
+    serverAddr.sin_port = htons(11302);
     serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     if (connect(client_socket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
@@ -81,14 +76,15 @@ int main() {
 
 
     while (true) {
-            char res = rec(client_socket);
+      char res = rec(client_socket);
 
-	    if (res == ':') {
-		sending(client_socket);
-	    }
-	    else if (res == '*') {
-			break;
-	    }
+      if (res == ':') {
+          sending(client_socket);
+	  system("clear");
+      } else if (res == '*') {
+          break;
+      } 
+
     }
 
     close(client_socket);
