@@ -23,7 +23,15 @@ int main() {
 
     int client_socketX = accept(server_socket, NULL, NULL);
     int client_socketO = accept(server_socket, NULL, NULL);
+
+
+
+
+   
     game.start_game(client_socketX, client_socketO);
+
+
+
 
     close(server_socket);
 }
