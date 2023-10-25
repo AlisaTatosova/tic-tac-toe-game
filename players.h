@@ -4,10 +4,10 @@
 
 class PlayerXO {
 public:
-    char turn;
+    char turn; // turn
     PlayerXO(char turn);
     PlayerXO();
-    std::pair<std::string, bool> make_move(int cell_num, char XO, Board& board);
+    std::pair<std::string, bool> make_move(int cell_num, char XO, Board& board); // making move in board
 };
 
 

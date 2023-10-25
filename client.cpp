@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include <thread>
 
+
 void sending(int client_socket) {
     int cell_num;
     std::cin >> cell_num;
@@ -16,8 +17,8 @@ void sending(int client_socket) {
 }
 
 
-char rec(int client_socket) {
-    char buffer[1000];
+char recieving(int client_socket) {
+    char buffer[300];
     recv(client_socket, buffer, sizeof(buffer), 0);  
     system("clear");
     bool flag = false;
@@ -53,7 +54,7 @@ char rec(int client_socket) {
     }
 
 
-  return buffer[175];
+    return buffer[175];
 }
 
 
@@ -64,19 +65,19 @@ int main() {
         return -1;
     }
 
-    sockaddr_in serverAddr;
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(11302);
-    serverAddr.sin_addr.s_addr = inet_addr("192.168.10.132");
+    sockaddr_in server_address;;
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(11302);
+    server_address.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-    if (connect(client_socket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
+    if (connect(client_socket, (struct sockaddr*)&server_address, sizeof(server_address)) == -1) {
         std::cerr << "Failed to connect to the server" << std::endl;
         return -1;
     }
 
 
     while (true) {
-      char res = rec(client_socket);
+      char res = recieving(client_socket);
 
       if (res == ':') {
           sending(client_socket);

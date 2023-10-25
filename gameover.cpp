@@ -2,6 +2,7 @@
 
 GameOver::GameOver(Board& board) : board{board} {}
 
+// checking for diagonal win
 bool GameOver::check_diagonal_win() {
     int size = 0;
     for (int i = 0; i < board.size() - 1; ++i) {
@@ -16,6 +17,7 @@ bool GameOver::check_diagonal_win() {
     return false;
 }
 
+// checking for antidiagonal win
 bool GameOver::check_anti_diagonal_win() {
     int size = 0;
     for (int i = 0; i < board.size(); ++i) {
@@ -31,6 +33,7 @@ bool GameOver::check_anti_diagonal_win() {
     return false;
 }
 
+// checking for row win
 bool GameOver::check_row_win(int row) {
     int size = 0;
     for (int i = 0; i < board.size() - 1; ++i) {
@@ -45,6 +48,7 @@ bool GameOver::check_row_win(int row) {
     return false;
 }
 
+// checking for column win
 bool GameOver::check_column_win(int col) {
     int size = 0;
     for (int i = 0; i < board.size() - 1; ++i) {
@@ -59,16 +63,15 @@ bool GameOver::check_column_win(int col) {
     return false;
 }
 
+// checking for if game is over
 std::pair<bool, std::string> GameOver::game_over(char turn, int cell_num) {
     bool win = false;
     std::string res = "";
     if (check_diagonal_win()) {
         if (turn == 'X') {
-            //board.print_board(board.size());
             res = "Diagonal win of X";
             win = true;
         } else {
-            //board.print_board(board.size());
             res = "Diagonal win of O";
             win = true;
         }
@@ -76,11 +79,9 @@ std::pair<bool, std::string> GameOver::game_over(char turn, int cell_num) {
 
     if (check_anti_diagonal_win()) {
         if (turn = 'X') {
-            //board.print_board(board.size());
             res = "Antidiagonal win of X";
             win = true;
         } else {
-            //board.print_board(board.size());
             res = "Antidiagonal win of O";
             win = true;
        }
@@ -88,11 +89,9 @@ std::pair<bool, std::string> GameOver::game_over(char turn, int cell_num) {
 
     if (check_row_win((cell_num - 1) / board.size())) {
         if (turn == 'X') {
-            //board.print_board(board.size());
             res = "Row win of X";
             win = true;
         } else {
-            //board.print_board(board.size());
             res = "Row win of O";
             win = true;
         }
@@ -100,11 +99,9 @@ std::pair<bool, std::string> GameOver::game_over(char turn, int cell_num) {
 
     if (check_column_win((cell_num - 1) % board.size())) {
         if (turn == 'X') {
-            //board.print_board(board.size());
             res = "Column win of X";
             win = true;
         } else {
-            //board.print_board(board.size());
             res = "Column win of O";
             win = true;
         }
@@ -119,7 +116,6 @@ std::pair<bool, std::string> GameOver::game_over_none() {
         }
     }
     std::string res = "";
-    //board.print_board(board.size());
     res = "End: None has won!";
     return {true, res};
 }
