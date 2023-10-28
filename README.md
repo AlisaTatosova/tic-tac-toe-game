@@ -11,11 +11,9 @@ This is a implementation of the classic game of Tic-Tac-Toe in C++. The game con
 
 # How to Play
 
-*Compile the server and client files using your C++ compiler. For example:
-
-```cpp
-g++ server.cpp -o server
-g++ client.cpp -o client
+* Compile the server and client files using your C++ compiler. For example:
+  g++ server.cpp -o server
+  g++ client.cpp -o client
 
 * Start the server by running server on one machine. The server will listen for two incoming client connections.
 * Start two clients on separate machines by running client.
