@@ -11,8 +11,8 @@ This is a implementation of the classic game of Tic-Tac-Toe in C++. The game con
 
 # How to Play
 
-* Compile the server and client files using your C++ compiler. For example:
-  g++ server.cpp -o server
+* Compile the server and client files using your C++ compiler.
+  g++ server.cpp board.cpp players.cpp tictactoe.cpp gameover.cpp -o server -pthread
   g++ client.cpp -o client
 
 * Start the server by running server on one machine. The server will listen for two incoming client connections.
