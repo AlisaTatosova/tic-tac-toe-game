@@ -1,0 +1,4 @@
+/home/alisa/ya/build/CMakeFiles/rebuild_cache.dir
+/home/alisa/ya/build/CMakeFiles/edit_cache.dir
+/home/alisa/ya/build/CMakeFiles/client.dir
+/home/alisa/ya/build/CMakeFiles/server.dir
